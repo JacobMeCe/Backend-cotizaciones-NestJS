@@ -19,13 +19,13 @@ export class Customer {
   @Column("text")
   name: string;
 
-  @Column({ type: "text", unique: true })
+  @Column("text")
   address: string;
 
-  @Column({ type: "text", unique: true })
+  @Column("text")
   email: string;
 
-  @Column({ type: "text", unique: true })
+  @Column("text")
   phone_number: string;
 
   @Column({
