@@ -1,9 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { CustomersService } from './customers.service';
-import { CreateCustomerDto } from './dto/create-customer.dto';
-import { UpdateCustomerDto } from './dto/update-customer.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  ParseUUIDPipe,
+} from "@nestjs/common";
+import { CustomersService } from "./customers.service";
+import { CreateCustomerDto } from "./dto/create-customer.dto";
+import { UpdateCustomerDto } from "./dto/update-customer.dto";
+import { PaginationDto } from "src/common/dtos/pagination.dto";
 
-@Controller('customers')
+@Controller("customers")
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
@@ -13,22 +24,30 @@ export class CustomersController {
   }
 
   @Get()
-  findAll() {
-    return this.customersService.findAll();
+  findAll(@Query() paginatioDto: PaginationDto) {
+    return this.customersService.findAll(paginatioDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.customersService.findOne(+id);
+  @Get("term/find")
+  findOne(@Query("term") term: string) {
+    return this.customersService.findOne(term);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
-    return this.customersService.update(+id, updateCustomerDto);
+  @Get("search")
+  search(@Query() paginationDto: PaginationDto, @Query("term") term: string) {
+    return this.customersService.searchCustomers(term, paginationDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.customersService.remove(+id);
+  @Patch(":id")
+  update(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() updateCustomerDto: UpdateCustomerDto
+  ) {
+    return this.customersService.update(id, updateCustomerDto);
+  }
+
+  @Delete(":id")
+  remove(@Param("id", ParseUUIDPipe) id: string) {
+    return this.customersService.remove(id);
   }
 }
